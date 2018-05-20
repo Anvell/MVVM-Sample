@@ -1,0 +1,155 @@
+﻿<Window x:Class="MVVMSample.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:MVVMSample"
+        xmlns:views="clr-namespace:MVVMSample.Views"
+        xmlns:converters="clr-namespace:MVVMSample.Converters"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="{DataBinding windowTitle}"
+        Left="{DataBinding applicationSettings.left, Mode=TwoWay}"
+        Top="{DataBinding applicationSettings.top, Mode=TwoWay}"
+        Height="{DataBinding applicationSettings.height, Mode=TwoWay}"
+        Width="{DataBinding applicationSettings.width, Mode=TwoWay}"
+        WindowState="{DataBinding applicationSettings.windowState, Mode=TwoWay}"
+        Background="#FFFAFAFA"
+        AllowDrop="True"
+        View.Bind="Drop OnHandleWindowDrop($args)">
+
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding newItemCmd}"
+                    Gesture="CTRL+N" />
+        <KeyBinding Command="{Binding undoCmd}"
+                    Gesture="CTRL+Z" />
+        <KeyBinding Command="{Binding openFileCmd}"
+                    Gesture="CTRL+O" />
+        <KeyBinding Command="{Binding saveFileCmd}"
+                    Gesture="CTRL+S" />
+        <KeyBinding Command="{Binding saveFileAsCmd}"
+                    Gesture="CTRL+SHIFT+S" />
+        <KeyBinding Command="{Binding pasteCmd}"
+                    Gesture="CTRL+V" />
+    </Window.InputBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="38" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0"
+              Background="{StaticResource AppBarBackground}">
+            <Grid.Resources>
+                <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+                    <SolidColorBrush x:Key="MaterialDesignBackground"
+                                     Color="#FF000000"
+                                     po:Freeze="True" />
+                    <SolidColorBrush x:Key="MaterialDesignPaper"
+                                     Color="#FF303030"
+                                     po:Freeze="True" />
+                    <SolidColorBrush x:Key="MaterialDesignCardBackground"
+                                     Color="#FF424242"
+                                     po:Freeze="True" />
+                    <SolidColorBrush x:Key="MaterialDesignToolBarBackground"
+                                     Color="#FF212121"
+                                     po:Freeze="True" />
+                    <SolidColorBrush x:Key="MaterialDesignBody"
+                                     Color="#DDFFFFFF"
+                                     po:Freeze="True" />
+                    <SolidColorBrush x:Key="MaterialDesignBodyLight"
+                                     Color="#89FFFFFF"
+                                     po:Freeze="True" />
+                    <SolidColorBrush x:Key="MaterialDesignColumnHeader"
+                                     Color="#BCFFFFFF"
+                                     po:Freeze="True" />
+                </ResourceDictionary>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Menu IsMainMenu="False"
+                  Grid.Column="0"
+                  VerticalAlignment="Center"
+                  Foreground="#FFC9C9C9"
+                  HorizontalAlignment="Left"
+                  Padding="0">
+                <MenuItem Header="File"
+                          FontSize="12">
+                    <MenuItem Header="New"
+                              Command="{Binding newFileCmd}"></MenuItem>
+                    <MenuItem Header="Open..."
+                              Command="{Binding openFileCmd}"
+                              InputGestureText="Ctrl+O"></MenuItem>
+                    <MenuItem Header="Save"
+                              Command="{Binding saveFileCmd}"
+                              InputGestureText="Ctrl+S"></MenuItem>
+                    <MenuItem Header="Save As..."
+                              Command="{Binding saveFileAsCmd}"
+                              InputGestureText="Ctrl+Shift+S"></MenuItem>
+                    <Separator Background="#FF474747" />
+                    <MenuItem Header="Import..."></MenuItem>
+                    <Separator Background="#FF474747" />
+                    <MenuItem Header="Exit"
+                              Click="{DataBinding OnClose()}"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="View"
+                          FontSize="12">
+                </MenuItem>
+                <MenuItem Header="Help"
+                          FontSize="12">
+                    <MenuItem Header="About"
+                              Click="{DataBinding OnAboutMessage()}"></MenuItem>
+                </MenuItem>
+            </Menu>
+            <ListBox Grid.Column="1"
+                     HorizontalAlignment="Center"
+                     SelectionMode="Single"
+                     Style="{StaticResource MaterialDesignToolToggleListBox}"
+                     SelectedIndex="{DataBinding currentIndex, Mode=TwoWay}"
+                     Margin="0"
+                     Height="26">
+                <ListBoxItem Background="#FF303030"
+                             Foreground="#FFB6B6B6">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center"
+                                   Margin="5,0,0,0"
+                                   Text="{StaticResource label_table_one}" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Background="#FF303030"
+                             Foreground="#FFB6B6B6">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center"
+                                   Margin="5,0,0,0" Text="{StaticResource label_table_two}"/>
+                    </StackPanel>
+                </ListBoxItem>
+            </ListBox>
+            <StackPanel VerticalAlignment="Center"
+                        Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <TextBlock Foreground="#FFC9C9C9"
+                           Margin="10,0"
+                           Text="Sample" />
+            </StackPanel>
+        </Grid>
+        <ContentControl Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        View.Bind="Content SelectedItem.content" />
+
+        <materialDesign:Snackbar Grid.Row="1"
+                                 IsActive="{DataBinding IsBusy, HasStablePath=true}">
+            <materialDesign:SnackbarMessage Content="{StaticResource label_waiting}"
+                                            ActionContent="Cancel"
+                                            materialDesign:SnackbarMessage.ActionClick="{DataBinding OnCancelFileSave()}" />
+        </materialDesign:Snackbar>
+
+    </Grid>
+</Window>

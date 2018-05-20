@@ -1,0 +1,221 @@
+﻿<UserControl x:Class="MVVMSample.Views.TableOneView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:MVVMSample.Converters"
+             xmlns:views="clr-namespace:MVVMSample.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="600"
+             d:DesignWidth="900">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4" />
+            <ColumnDefinition MinWidth="150"
+                              MaxWidth="900"
+                              Width="300" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <materialDesign:ColorZone Grid.Column="0"
+                                  Grid.Row="0"
+                                  Mode="PrimaryLight"
+                                  Margin="6 8 0 0"
+                                  CornerRadius="2"
+                                  Background="#FFEEEEEE">
+            <StackPanel Orientation="Horizontal"
+                        Margin="8">
+
+                <!--#region Search field -->
+                <Border Background="White"
+                        MaxHeight="30"
+                        CornerRadius="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Style="{DynamicResource MaterialDesignToolButton}"
+                                Height="24"
+                                Width="24">
+                            <materialDesign:PackIcon Kind="Magnify"
+                                                     Opacity=".56" />
+                        </Button>
+                        <TextBox Grid.Column="1"
+                                 Margin="5 0 0 0"
+                                 materialDesign:HintAssist.Hint="Search"
+                                 Text="{DataBinding searchText, Delay=600, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                 BorderThickness="0"
+                                 Width="200"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+                <!--#endregion-->
+
+                <!--#region Filters -->
+                <ListBox MaxHeight="30"
+                         SelectionMode="Multiple"
+                         FontSize="11"
+                         Style="{StaticResource MaterialDesignToolToggleFlatListBox}"
+                         Margin="10 0 0 0"
+                         VerticalAlignment="Center">
+                    <ListBox.Resources>
+                        <Style TargetType="{x:Type ListBoxItem}"
+                               BasedOn="{StaticResource MaterialDesignToolToggleListBoxItem}">
+                            <Setter Property="Padding"
+                                    Value="4 6 4 6" />
+                        </Style>
+                    </ListBox.Resources>
+                    <ListBoxItem Selected="{DataBinding 'OnOptionFilter(true, 1)'}"
+                                 Unselected="{DataBinding 'OnOptionFilter(false, 1)'}"
+                                 Content="{StaticResource label_option_one}"
+                                 IsSelected="False" />
+                    <ListBoxItem Selected="{DataBinding 'OnOptionFilter(true, 2)'}"
+                                 Unselected="{DataBinding 'OnOptionFilter(false, 2)'}"
+                                 Content="{StaticResource label_option_two}"
+                                 IsSelected="False" />
+                </ListBox>
+                <!--#endregion-->
+
+            </StackPanel>
+        </materialDesign:ColorZone>
+
+        <DataGrid Grid.Column="0"
+                  Grid.Row="1"
+                  IsSynchronizedWithCurrentItem="True"
+                  FontSize="11.5"
+                  PreviewKeyDown="{DataBinding 'OnTablePreviewKeyDown($args)'}"
+                  SelectedItem="{DataBinding selectedItem, Mode=TwoWay}"
+                  ItemsSource="{DataBinding tableOneDataView}"
+                  IsReadOnly="False"
+                  AutoGenerateColumns="False"
+                  SelectionUnit="FullRow"
+                  CanUserAddRows="False"
+                  AlternatingRowBackground="WhiteSmoke"
+                  VerticalGridLinesBrush="#FFF0F0F0"
+                  GridLinesVisibility="All"
+                  BorderThickness="0"
+                  SelectionChanged="{DataBinding 'OnTableSelectionChanged($args)'}"
+                  materialDesign:DataGridAssist.ColumnHeaderPadding="4"
+                  materialDesign:DataGridAssist.CellPadding="4"
+                  VirtualizingPanel.IsVirtualizing="True">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader"
+                       BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="180"
+                                    Header="{StaticResource label_name}"
+                                    Binding="{Binding name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+                <DataGridTextColumn Width="100"
+                                    Header="{StaticResource label_company}"
+                                    Binding="{Binding company, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+                <DataGridTextColumn Width="180"
+                                    Header="{StaticResource label_email}"
+                                    Binding="{Binding email, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+            </DataGrid.Columns>
+
+            <DataGrid.ContextMenu>
+                <ContextMenu IsTextSearchEnabled="True">
+                    <MenuItem Command="{Binding copyRowCmd}"
+                              Height="26"
+                              Header="Copy" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+        </DataGrid>
+
+        <GridSplitter HorizontalAlignment="Stretch"
+                      Grid.Column="1"
+                      BorderThickness="0"
+                      Grid.RowSpan="2"
+                      Background="{DynamicResource MaterialDesignPaper}" />
+
+        <!--#region Right Panel -->
+        <ScrollViewer VerticalContentAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch"
+                      VerticalScrollBarVisibility="Visible"
+                      Grid.Column="2"
+                      Grid.RowSpan="2">
+            <ScrollViewer.Background>
+                <LinearGradientBrush EndPoint="0.5,1"
+                                     StartPoint="0.5,0">
+                    <GradientStop Color="#FFE6E6E6"
+                                  Offset="0" />
+                    <GradientStop Color="WhiteSmoke"
+                                  Offset="0.087" />
+                </LinearGradientBrush>
+            </ScrollViewer.Background>
+            <StackPanel Margin="6,8,6,6"
+                        Grid.RowSpan="2">
+
+                <GroupBox BorderThickness="0"
+                          materialDesign:ColorZoneAssist.Mode="Standard"
+                          Header="{StaticResource label_properties}">
+                    <GroupBox.Resources>
+                        <ResourceDictionary>
+                            <Style TargetType="TextBox"
+                                   BasedOn="{StaticResource MaterialDesignTextBox}">
+                                <Setter Property="Margin"
+                                        Value="0,8,0,0" />
+                            </Style>
+                        </ResourceDictionary>
+                    </GroupBox.Resources>
+                    <StackPanel>
+
+                        <TextBox Text="{DataBinding selectedItem.name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 materialDesign:HintAssist.Hint="{StaticResource label_name}" />
+
+                        <TextBox Text="{DataBinding selectedItem.company, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 materialDesign:HintAssist.Hint="{StaticResource label_company}" />
+
+                        <TextBox Text="{DataBinding selectedItem.email, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 materialDesign:HintAssist.Hint="{StaticResource label_email}" />
+
+                        <TextBox Text="{DataBinding selectedItem.phone, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 materialDesign:HintAssist.Hint="{StaticResource label_phone}" />
+
+                        <WrapPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{DataBinding selectedItem.optionOne, Mode=TwoWay}"
+                                      Margin="0,15,20,0"
+                                      Content="{StaticResource label_option_one}" />
+                            <CheckBox IsChecked="{DataBinding selectedItem.optionTwo, Mode=TwoWay}"
+                                      Margin="0,15,0,0"
+                                      Content="{StaticResource label_option_two}" />
+                        </WrapPanel>
+
+                        <Border Margin="0,18,0,0"
+                                BorderBrush="#FFCCCCCC"
+                                ClipToBounds="True"
+                                BorderThickness="1">
+                            <TextBox VerticalAlignment="Top"
+                                     AcceptsReturn="True"
+                                     Margin="-3"
+                                     TextWrapping="Wrap"
+                                     Height="150"
+                                     VerticalScrollBarVisibility="Auto"
+                                     materialDesign:HintAssist.Hint="{StaticResource label_comment}"
+                                     materialDesign:HintAssist.IsFloating="False"
+                                     TextAlignment="Left"
+                                     Text="{DataBinding selectedItem.comment, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                     Style="{StaticResource MaterialDesignTextAreaTextBox}" />
+                        </Border>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+        <!--#endregion-->
+
+    </Grid>
+
+</UserControl>

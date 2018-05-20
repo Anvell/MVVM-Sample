@@ -1,0 +1,33 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="AppBarBackground" Color="#FF303030"></SolidColorBrush>
+
+    <LinearGradientBrush x:Key="BlueGradientBackground" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FF5CF8FF" Offset="0"/>
+        <GradientStop Color="#FF3F6DCF" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="VioletGradientBackground" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FFFFA1D0" Offset="0.004"/>
+        <GradientStop Color="#FFB910DE" Offset="1"/>
+    </LinearGradientBrush>
+
+    <Style TargetType="TextBox" x:Key="SimpleTextBox">
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <Border Name="bd" BorderThickness="1" BorderBrush="#FF4D4D4D" Opacity="0">
+                        </Border>
+                        <Border Name="container" Padding="{TemplateBinding Padding}" Height="{TemplateBinding Height}" BorderThickness="1" BorderBrush="#ccc" Background="{TemplateBinding Background}" Margin="1">
+                            <ScrollViewer Padding="0" x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
