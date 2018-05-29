@@ -1,7 +1,5 @@
 # MVVM Sample
 
-<img align="right" src="https://github.com/Anvell/anvell.github.io/blob/master/MVVM-SampleSmall.png">
-
 MVVM Sample is a CRUD-like application showcasing implementation of the MVVM architecture. 
 It has the following functionality:
 * Multi ViewModel tabbed navigation
